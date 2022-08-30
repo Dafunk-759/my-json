@@ -2,7 +2,7 @@ const assert = require("assert");
 const MYJSON = require("../index");
 
 describe("my-json-parser", () => {
-  describe.only("lexer", () => {
+  describe("lexer", () => {
     it("should work", () => {
       let json = `\
 {
@@ -54,120 +54,125 @@ describe("my-json-parser", () => {
     });
   });
 
-  it("random 1", () => {
-    let json = `\
-[
-  -145372122.00353003,
+  describe("parse", () => {
+    it("random 1", () => {
+      let json = `\
   [
-    "so",
-    -675873615,
-    {
-      "separate": "job",
-      "identity": "large",
-      "object": "war",
-      "tool": false,
-      "difficult": -947304937.3325515,
-      "dead": "smell"
-    },
-    false,
-    -463320125,
-    "way"
-  ],
-  "skill",
-  -917230731.7413311,
-  "where",
-  true
-]`;
-    assert.deepStrictEqual(JSON.parse(json), MYJSON.parse(json));
-  });
-
-  it("random 2", () => {
-    let json = `\    
-[
-  [
-    {
-      "development": -545951330,
-      "thou": true,
-      "play": "biggest",
-      "region": 459630327,
-      "explore": 105306500,
-      "monkey": 1163235786.0373883
-    },
-    true,
-    1547100207,
-    -246523760,
-    "thumb",
-    1502769557.5119724
-  ],
-  false,
-  false,
-  849663793.2265344,
-  "previous",
-  false
-]
-    `;
-
-    assert.deepStrictEqual(JSON.parse(json), MYJSON.parse(json));
-  });
-
-  it("random 3", () => {
-    let json = `\
-{
-  "born": "massage",
-  "necessary": {
-    "value": -392269822.380507,
-    "copper": "accurate",
-    "leather": true,
-    "silly": "rays",
-    "funny": "owner",
-    "unhappy": false
-  },
-  "probably": 2092763820.7899766,
-  "club": {
-    "carefully": {
-      "mark": "cry",
-      "new": true,
-      "iron": true,
-      "play": "planning",
-      "real": "development",
-      "left": 1200965704
-    },
-    "other": 1525824359,
-    "sugar": false,
-    "people": "plastic",
-    "up": "pool",
-    "certain": true
-  },
-  "forget": "cost",
-  "house": true
-}`;
-    assert.deepStrictEqual(JSON.parse(json), MYJSON.parse(json));
-  });
-
-  it("random 4", () => {
-    let json = `\
-[
-  {
-    "up": [
-      -710146473.361948,
-      -1527026341,
-      -1514475872.6584358,
-      "contrast",
-      -897174894,
-      true
+    -145372122.00353003,
+    [
+      "so",
+      -675873615,
+      {
+        "separate": "job",
+        "identity": "large",
+        "object": "war",
+        "tool": false,
+        "difficult": -947304937.3325515,
+        "dead": "smell"
+      },
+      false,
+      -463320125,
+      "way"
     ],
-    "organization": "dream",
-    "national": -1995135445,
-    "flies": "species",
-    "president": -1197689665.214532,
-    "her": null
-  },
-  -1689403418.6342025,
-  "related",
-  95397125.06454372,
-  false,
-  -657620507
-]`;
-    assert.deepStrictEqual(JSON.parse(json), MYJSON.parse(json));
+    "skill",
+    -917230731.7413311,
+    "where",
+    true
+  ]`;
+      let ret = MYJSON.parse(json);
+      // console.log("ret:", ret);
+
+      assert.deepStrictEqual(ret, JSON.parse(json));
+    });
+
+    it("random 2", () => {
+      let json = `\    
+  [
+    [
+      {
+        "development": -545951330,
+        "thou": true,
+        "play": "biggest",
+        "region": 459630327,
+        "explore": 105306500,
+        "monkey": 1163235786.0373883
+      },
+      true,
+      1547100207,
+      -246523760,
+      "thumb",
+      1502769557.5119724
+    ],
+    false,
+    false,
+    849663793.2265344,
+    "previous",
+    false
+  ]
+      `;
+
+      assert.deepStrictEqual(MYJSON.parse(json), JSON.parse(json));
+    });
+
+    it("random 3", () => {
+      let json = `\
+  {
+    "born": "massage",
+    "necessary": {
+      "value": -392269822.380507,
+      "copper": "accurate",
+      "leather": true,
+      "silly": "rays",
+      "funny": "owner",
+      "unhappy": false
+    },
+    "probably": 2092763820.7899766,
+    "club": {
+      "carefully": {
+        "mark": "cry",
+        "new": true,
+        "iron": true,
+        "play": "planning",
+        "real": "development",
+        "left": 1200965704
+      },
+      "other": 1525824359,
+      "sugar": false,
+      "people": "plastic",
+      "up": "pool",
+      "certain": true
+    },
+    "forget": "cost",
+    "house": true
+  }`;
+      assert.deepStrictEqual(MYJSON.parse(json), JSON.parse(json));
+    });
+
+    it("random 4", () => {
+      let json = `\
+  [
+    {
+      "up": [
+        -710146473.361948,
+        -1527026341,
+        -1514475872.6584358,
+        "contrast",
+        -897174894,
+        true
+      ],
+      "organization": "dream",
+      "national": -1995135445,
+      "flies": "species",
+      "president": -1197689665.214532,
+      "her": null
+    },
+    -1689403418.6342025,
+    "related",
+    95397125.06454372,
+    false,
+    -657620507
+  ]`;
+      assert.deepStrictEqual(MYJSON.parse(json), JSON.parse(json));
+    });
   });
 });
