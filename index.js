@@ -112,7 +112,13 @@ function* genToken(rawJson) {
   }
 }
 
-const escape = (s) => {
+// mode: 'p'(parse) or 's'(stringigy)
+
+const modes = {
+  parse: 0,
+  stringify: 1,
+};
+const escape = (s, mode = modes.parse) => {
   let chars = [
     ['\\"', '"'],
     ["\\n", "\n"],
@@ -121,11 +127,21 @@ const escape = (s) => {
     ["\\f", "\f"],
   ];
 
-  // 去掉头尾两个双引号
-  s = s.slice(1, -1);
-
-  for (let [c1, c2] of chars) {
-    s = s.replace(c1, c2);
+  switch (mode) {
+    case modes.parse:
+      // 去掉头尾两个双引号
+      s = s.slice(1, -1);
+      for (let [c1, c2] of chars) {
+        s = s.replace(c1, c2);
+      }
+      break;
+    case modes.stringify:
+      for (let [c1, c2] of chars) {
+        s = s.replace(c2, c1);
+      }
+      // 加上头尾两个引号
+      s = '"' + s + '"';
+      break;
   }
 
   return s;
@@ -168,29 +184,6 @@ at line: ${this.currentToken.line} column: ${this.currentToken.column}`);
     return escape(v);
   }
 
-  #value() {
-    let v;
-    switch (this.#tt) {
-      case Token.t.BOOL:
-        v = this.currentToken.value;
-        this.#eat(Token.t.BOOL);
-        return bools[v];
-      case Token.t.NUMBER:
-        v = this.currentToken.value;
-        this.#eat(Token.t.NUMBER);
-        return parseFloat(v);
-      case Token.t.NULL:
-        v = this.currentToken.value;
-        this.#eat(Token.t.NULL);
-        return null;
-      case Token.t.STRING:
-        return this.#string();
-      case Token.t.LCB:
-      case Token.t.LSB:
-        return this.#json();
-    }
-  }
-
   #object() {
     let obj = {};
     this.#eat(Token.t.LCB);
@@ -204,7 +197,7 @@ at line: ${this.currentToken.line} column: ${this.currentToken.column}`);
     const pair = () => {
       key = this.#string();
       this.#eat(Token.t.COLON);
-      value = this.#value();
+      value = this.#json();
       obj[key] = value;
     };
 
@@ -226,10 +219,10 @@ at line: ${this.currentToken.line} column: ${this.currentToken.column}`);
       return arr;
     }
 
-    arr.push(this.#value());
+    arr.push(this.#json());
     while (this.#tt === Token.t.COMMA) {
       this.#eat(Token.t.COMMA);
-      arr.push(this.#value());
+      arr.push(this.#json());
     }
 
     this.#eat(Token.t.RSB);
@@ -237,13 +230,27 @@ at line: ${this.currentToken.line} column: ${this.currentToken.column}`);
   }
 
   #json() {
+    let v;
     switch (this.#tt) {
+      case Token.t.BOOL:
+        v = this.currentToken.value;
+        this.#eat(Token.t.BOOL);
+        return bools[v];
+      case Token.t.NUMBER:
+        v = this.currentToken.value;
+        this.#eat(Token.t.NUMBER);
+        return parseFloat(v);
+      case Token.t.NULL:
+        v = this.currentToken.value;
+        this.#eat(Token.t.NULL);
+        return null;
+      case Token.t.STRING:
+        return this.#string();
       case Token.t.LCB:
         return this.#object();
       case Token.t.LSB:
         return this.#array();
     }
-    throw "fail";
   }
 
   parse() {
@@ -251,10 +258,43 @@ at line: ${this.currentToken.line} column: ${this.currentToken.column}`);
   }
 }
 
+function stringify(json) {
+  if (Array.isArray(json)) {
+    return "[" + json.map((j) => stringify(j)).join(",") + "]";
+  }
+
+  if (json && typeof json === "object") {
+    return (
+      "{" +
+      Object.entries(json)
+        .map(([k, v]) => stringify(k) + ":" + stringify(v))
+        .join(",") +
+      "}"
+    );
+  }
+
+  if (typeof json === "boolean") {
+    if (json) return "true";
+    else return "false";
+  }
+
+  if (typeof json === "number") {
+    return json.toString();
+  }
+
+  if (json === null) {
+    return "null";
+  }
+
+  if (typeof json === "string") {
+    return escape(json, modes.stringify);
+  }
+}
+
 module.exports = {
   parse(jsonRaw) {
     return new Parser(jsonRaw).parse();
   },
-  stringify(json) {},
+  stringify,
   genToken,
 };

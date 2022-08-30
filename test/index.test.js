@@ -54,7 +54,107 @@ describe("my-json-parser", () => {
     });
   });
 
+  describe("stringify", () => {
+    it("random 1", () => {
+      let json = {
+        adjective: {
+          given: {
+            post: -1305874130,
+            through: false,
+            ants: "lake",
+            monkey: "practice",
+            jack: "gather",
+            related: 1583557856.9963179,
+          },
+          power: "orbit",
+          community: "south",
+          liquid: "relationship",
+          author: "social",
+          condition: false,
+        },
+        send: true,
+        glass: "after",
+        along: "sister",
+        terrible: false,
+        musical: 940642301,
+      };
+
+      assert.strictEqual(MYJSON.stringify(json), JSON.stringify(json));
+    });
+
+    it("random 2", () => {
+      let json = [
+        -917030705,
+        {
+          queen: {
+            four: 1719317309,
+            law: -1616310301.8309698,
+            clothing: 1049850165.5139685,
+            combination: "order",
+            trouble: 1714450100.4240818,
+            lunch: false,
+          },
+          chosen: "those",
+          than: null,
+          mind: "enter",
+          milk: "fact",
+          last: false,
+        },
+        "question",
+        false,
+        true,
+        false,
+      ];
+
+      assert.strictEqual(MYJSON.stringify(json), JSON.stringify(json));
+    });
+
+    it("random 3", () => {
+      let json = {
+        curious: -951202073,
+        design: false,
+        mine: true,
+        rise: false,
+        leg: 'so\nng"foo',
+        comfortable: [
+          [
+            1429010959,
+            -906343150.1696768,
+            492705261,
+            974653269.4832096,
+            "compare",
+            "mission",
+          ],
+          "within",
+          "similar",
+          true,
+          "whose",
+          false,
+        ],
+      };
+
+      assert.strictEqual(MYJSON.stringify(json), JSON.stringify(json));
+    });
+  });
+
   describe("parse", () => {
+    it("should parse single value", () => {
+      let val = '"foo bar"';
+      assert.strictEqual(MYJSON.parse(val), JSON.parse(val));
+
+      val = "true";
+      assert.strictEqual(MYJSON.parse(val), JSON.parse(val));
+
+      val = "false";
+      assert.strictEqual(MYJSON.parse(val), JSON.parse(val));
+
+      val = "null";
+      assert.strictEqual(MYJSON.parse(val), JSON.parse(val));
+
+      val = "-123.56";
+      assert.strictEqual(MYJSON.parse(val), JSON.parse(val));
+    });
+
     it("random 1", () => {
       let json = `\
   [

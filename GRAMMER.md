@@ -1,17 +1,15 @@
-json        : array | object
+json       :  BOOL | NUMBER | NULL | STRING | array | object
 
 // SB : Square brackets
 array       : LSB arrayBody RSB
 
-arrayBody   : empty | value (COMMA value)*
+arrayBody   : empty | json (COMMA json)*
 
 // CB ： curly braces
 object      : LCB objectBody RCB
 
 objectBody  : empty | pair (COMMA pair)*
 
-pair        : STRING COLON value
-
-value       :  BOOL | NUMBER | NULL | STRING | json
+pair        : STRING COLON json
 
 empty       : 
